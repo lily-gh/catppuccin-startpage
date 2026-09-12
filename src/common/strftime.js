@@ -14,7 +14,7 @@ new Date().strftime("do B Y")    => 18th January 2018
 new Date().strftime("h:i p")     => 09:32 PM (12-hour format)
 new Date().strftime("K:i p")     => 9:32 PM (12-hour format without leading zero)
 
-This function extends Date.prototype and provides flexible date formatting for the startpage
+This function extends Date.prototype with the date formatting used by the startpage
 */
 
 // Create a date object for a specific timezone using IANA timezone names
@@ -46,7 +46,6 @@ Date.createWithTimezone = function (timezone = null) {
     formatParts[part.type] = part.value;
   });
 
-  // Create new date object with the timezone-adjusted values
   return new Date(
     formatParts.year,
     parseInt(formatParts.month) - 1, // Month is 0-based
@@ -57,7 +56,7 @@ Date.createWithTimezone = function (timezone = null) {
   );
 };
 
-// Add ability to create a Date with a specific timezone offset in hours (legacy method)
+// Create a Date with a specific timezone offset in hours (legacy method)
 Date.createWithTimezoneOffset = function (timezoneOffsetHours = 0) {
   const localDate = new Date();
 
@@ -67,20 +66,17 @@ Date.createWithTimezoneOffset = function (timezoneOffsetHours = 0) {
   // Calculate the target timezone offset in milliseconds
   const targetOffsetMs = (localOffset + timezoneOffsetHours * 60) * 60 * 1000;
 
-  // Adjust the time
   return new Date(localDate.getTime() + targetOffsetMs);
 };
 
-// Extended Date prototype with strftime functionality for flexible date formatting
+// Extend the Date prototype with strftime-style formatting
 Date.prototype.strftime = function (format = "c", locale = "en-US") {
   const date = this;
 
-  // Validate date object
   const isValid = (date) => date instanceof Date && !isNaN(date);
 
   if (!isValid(date)) throw date;
 
-  // Add padding method to numbers for formatting
   Number.prototype.pad = function (n = 2) {
     return (Array(n).join("0") + this).substr(-n);
   };
@@ -96,7 +92,6 @@ Date.prototype.strftime = function (format = "c", locale = "en-US") {
     );
   };
 
-  // Month and day name arrays for formatting
   const month = [
     "January",
     "February",
@@ -113,10 +108,8 @@ Date.prototype.strftime = function (format = "c", locale = "en-US") {
   ],
     days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
     result = [],
-    // Calculate hours in different formats
     hours24 = date.getHours(),
     hours12 = hours24 % 12 || 12, // Convert 0 to 12 for 12 AM
-    // Format mapping object for strftime codes
     formats = {
       a: days[date.getDay()].substr(0, 3),
       A: days[date.getDay()],

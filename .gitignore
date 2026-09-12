@@ -1,11 +1,20 @@
-# chores
-.log/
-.pytest_cache
-
-# IDE
-.vscode
-.zed
-
 # OS
 .DS_Store
-**/.DS_Store
+Thumbs.db
+
+# Editors
+.zed/
+.idea/
+.vscode/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Misc
+.cache/
+.tmp/

@@ -1,11 +1,10 @@
-// Search component for handling search functionality with multiple engines
+// Search component, supports multiple search engines
 class Search extends Component {
-  // References to DOM elements for the search component
   refs = {
     search: '#search',
     input: '#search input[type="text"]',
     engines: '.search-engines',
-    close: '.close'
+    close: '.close',
   };
 
   /**
@@ -45,7 +44,7 @@ class Search extends Component {
 
       #search div {
           position: relative;
-          width: 80%;
+          width: 100%;
       }
 
       #search input {
@@ -118,8 +117,8 @@ class Search extends Component {
    */
   imports() {
     return [
-      this.getFontResource('roboto'),
-      this.getIconResource('material')
+      this.getResource('fonts', 'roboto'),
+      this.getResource('icons', 'material'),
     ];
   }
 
@@ -144,8 +143,10 @@ class Search extends Component {
    * @returns {void}
    */
   loadEngines() {
-    for (var key in this.engines)
-      this.refs.engines.innerHTML += `<li><p title="${this.engines[key][1]}">!${key}</p></li>`;
+    const html = Object.keys(this.engines)
+      .map((key) => `<li><p title="${this.engines[key][1]}">!${key}</p></li>`)
+      .join('');
+    this.refs.engines.innerHTML = html;
   }
 
   /**
@@ -167,6 +168,51 @@ class Search extends Component {
   }
 
   /**
+   * Check if the input is a valid URL
+   * @param {string} input - The input string to check
+   * @returns {boolean} True if the input is a valid URL
+   */
+  isValidUrl(input) {
+    const urlPatterns = [
+      // Domain with TLD (e.g., google.com, github.com)
+      /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/.*)?$/,
+      // Full URLs with protocol
+      /^https?:\/\/.+/,
+      // URLs with www prefix
+      /^www\..+/,
+      // IP addresses
+      /^(\d{1,3}\.){3}\d{1,3}(:\d+)?(\/.*)?$/,
+      // localhost with optional port
+      /^localhost(:\d+)?(\/.*)?$/
+    ];
+
+    return urlPatterns.some(pattern => pattern.test(input.trim()));
+  }
+
+  /**
+   * Format URL for navigation
+   * @param {string} url - The URL to format
+   * @returns {string} Properly formatted URL with protocol
+   */
+  formatUrl(url) {
+    url = url.trim();
+
+    if (/^https?:\/\//.test(url)) {
+      return url;
+    }
+
+    if (/^www\./.test(url)) {
+      return `https://${url}`;
+    }
+
+    if (/^localhost/.test(url) || /^(\d{1,3}\.){3}\d{1,3}/.test(url)) {
+      return `http://${url}`;
+    }
+
+    return `https://${url}`;
+  }
+
+  /**
    * Handle search input and engine selection
    * @param {KeyboardEvent} event - The keyboard event from user input
    * @returns {void}
@@ -176,32 +222,39 @@ class Search extends Component {
 
     let args = target.value.split(' ');
     let prefix = args[0];
-    let defaultEngine = this.engines['d'][0];
-    let engine = defaultEngine;
+
+    const defaultEngineKey = CONFIG.search.default || 'd';
+    let engine = this.engines[defaultEngineKey]?.[0] || this.engines['d'][0];
+
+    if (key === 'Escape') {
+      this.deactivate();
+      return;
+    }
 
     // Highlight active engine based on prefix
-    this.refs.engines.childNodes.forEach(engine => {
-      if (prefix === engine.firstChild.innerHTML)
-        engine.classList.add('active');
+    this.refs.engines.childNodes.forEach((node) => {
+      if (prefix === node.firstChild.innerHTML)
+        node.classList.add('active');
       else
-        engine.classList.remove('active');
+        node.classList.remove('active');
     });
 
-    // Handle Enter key for search execution
     if (key === 'Enter') {
+      const fullInput = target.value.trim();
+
+      if (this.isValidUrl(fullInput)) {
+        window.location = this.formatUrl(fullInput);
+        return;
+      }
+
       // Check for engine prefix (e.g., !g for Google)
       if (prefix.indexOf('!') === 0) {
         engine = this.engines[prefix.substr(1)][0];
         args = args.slice(1);
       }
 
-      // Navigate to search results
       window.location = engine + encodeURI(args.join(' '));
     }
-
-    // Handle Escape key to close search
-    if (key === 'Escape')
-      this.deactivate();
   }
 
   /**

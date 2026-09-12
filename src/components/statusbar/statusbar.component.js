@@ -1,10 +1,8 @@
 
 // Statusbar component for tab navigation and widgets
 class Statusbar extends Component {
-  // External DOM element references
   externalRefs = {};
 
-  // CSS selector references for DOM elements
   refs = {
     categories: ".categories ul",
     tabs: "#tabs ul li",
@@ -12,7 +10,6 @@ class Statusbar extends Component {
     fastlink: ".fastlink",
   };
 
-  // Currently active tab index
   currentTabIndex = 0;
 
   /**
@@ -38,7 +35,7 @@ class Statusbar extends Component {
    * @returns {string[]} Array of CSS file paths
    */
   imports() {
-    return [this.getFontResource('roboto'), this.getIconResource('material'), this.getLibraryResource('awoo')];
+    return [this.getResource('fonts', 'roboto'), this.getResource('icons', 'material'), this.getResource('libs', 'awoo')];
   }
 
   /**
@@ -241,10 +238,7 @@ class Statusbar extends Component {
     document.onkeydown = (e) => this.handleKeyPress(e);
     document.onwheel = (e) => this.handleWheelScroll(e);
     this.refs.fastlink.onclick = () => {
-      console.log(CONFIG.fastlink);
-      if (CONFIG.config.fastlink) {
-        window.location.href = CONFIG.config.fastlink;
-      }
+      if (CONFIG.fastlink) window.location.href = CONFIG.fastlink;
     };
 
     // Store current tab index before page unload
@@ -287,7 +281,6 @@ class Statusbar extends Component {
 
     if (target.shadow && target.shadow.activeElement) return;
 
-    // Find currently active tab
     let activeTab = -1;
     this.refs.tabs.forEach((tab, index) => {
       if (tab.getAttribute("active") === "") {
@@ -295,7 +288,6 @@ class Statusbar extends Component {
       }
     });
 
-    // Navigate to next or previous tab based on wheel direction
     if (wheelDelta > 0) {
       this.activateByKey((activeTab + 1) % (this.refs.tabs.length - 1));
     } else {

@@ -1,22 +1,20 @@
 class Config {
   // Default configuration values for the startpage - these can be overridden by user configuration or local storage
   defaults = {
-    // Whether to override localStorage with config values
     overrideStorage: false,
     temperature: {
-      // Default city for weather display
       location: "London",
       // Temperature scale: C for Celsius, F for Fahrenheit
       scale: "C",
+      // OpenWeatherMap API key, leave empty to disable the weather widget
+      appId: "",
     },
     clock: {
       // 12-hour format with AM/PM
       format: "k:i p",
     },
-    // Extra clocks to display alongside main clock
     additionalClocks: [
       {
-        // Label displayed next to the clock
         label: "UA",
         // IANA timezone name (handles DST automatically)
         timezone: "Europe/Kyiv",
@@ -24,18 +22,14 @@ class Config {
         format: "h:i",
       },
       {
-        // Clock label
         label: "Tokyo",
-        // IANA timezone name
         timezone: "Asia/Tokyo",
         // 24-hour format without leading zero
         format: "H:i",
-        // Locale for localised formatting
         locale: "ja-JP",
       }
     ],
     search: {
-      // Search engine shortcuts and their URLs
       engines: {
         p: ["https://www.perplexity.ai/search/?q=", "PerplexityAI"],
         d: ["https://duckduckgo.com/?q=", "DuckDuckGo"],
@@ -44,20 +38,18 @@ class Config {
     },
     // List of disabled components
     disabled: [],
+    // URL to open when clicking the fastlink button in the statusbar
+    fastlink: "",
     // Whether to use local fonts instead of Google Fonts CDN
     localFonts: false,
-    // Whether to restore last active tab on load
     openLastVisitedTab: false,
     // User-defined bookmark tabs
     tabs: [],
-    // Keyboard shortcuts for actions
     keybindings: {
-      // 's' key opens search bar
       "s": "search-bar",
     }
   };
 
-  // User configuration object
   config;
 
   /**
@@ -138,11 +130,11 @@ class Config {
    * @returns {void}
    */
   setKeybindings() {
-    document.onkeypress = ({ key }) => {
+    document.addEventListener("keydown", ({ key }) => {
       if (document.activeElement !== document.body) return;
 
-      if (Object.keys(this.config.keybindings).includes(key)) Actions.activate(this.config.keybindings[key]);
-    };
+      if (key in this.config.keybindings) Actions.activate(this.config.keybindings[key]);
+    });
   }
 
   /**

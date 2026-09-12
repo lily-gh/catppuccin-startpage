@@ -100,7 +100,6 @@ class Category extends Component {
  * Main tabs component for displaying categorised links and navigation
  */
 class Tabs extends Component {
-  // CSS selector references for DOM elements
   refs = {};
 
   /**
@@ -117,11 +116,11 @@ class Tabs extends Component {
    */
   imports() {
     return [
-      this.getIconResource('material'),
-      this.resources.icons.tabler,
-      this.getFontResource('roboto'),
-      this.getFontResource('raleway'),
-      this.getLibraryResource('awoo'),
+      this.getResource('icons', 'material'),
+      this.getResource('icons', 'tabler'),
+      this.getResource('fonts', 'roboto'),
+      this.getResource('fonts', 'raleway'),
+      this.getResource('libs', 'awoo'),
     ];
   }
 
@@ -176,9 +175,9 @@ class Tabs extends Component {
           width: 100%;
           height: 100%;
           right: 100%;
-          background: ${CONFIG.palette.base} url("../img/bg-1.gif") repeat left;
+          background: ${CONFIG.palette.base};
           transition: all .6s;
-          # animation: scroll 25s ease-in-out infinite;
+          /* animation: scroll 25s ease-in-out infinite; */
       }
 
       @keyframes scroll {

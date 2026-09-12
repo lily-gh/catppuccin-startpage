@@ -1,6 +1,5 @@
 // Clock component for displaying main time and additional timezone clocks
 class Clock extends Component {
-  // References to DOM elements for the clock component
   refs = {
     clockContainer: ".clock-container",
     icon: ".clock-icon",
@@ -19,7 +18,7 @@ class Clock extends Component {
    * @returns {Array<string>} Array of resource imports
    */
   imports() {
-    return [this.getIconResource('material'), this.getFontResource('roboto')];
+    return [this.getResource('icons', 'material'), this.getResource('fonts', 'roboto')];
   }
 
   /**
@@ -64,6 +63,7 @@ class Clock extends Component {
         .clock-icon {
             font-size: 10pt;
             margin-right: 5px;
+            transform: translateY(-0.5px);
         }
 
         .clock-item {
@@ -125,7 +125,6 @@ class Clock extends Component {
         mainIcon.style.color = CONFIG.clock.icon_color;
       }
 
-      // Set colours for additional clock icons if they exist
       if (CONFIG.additionalClocks && CONFIG.additionalClocks.length) {
         CONFIG.additionalClocks.forEach((clock, index) => {
           const additionalIcon = this.shadow.querySelector(`.additional-icon-${index}`);
@@ -143,29 +142,22 @@ class Clock extends Component {
    */
   setTime() {
     if (this.shadow) {
-      // Update main clock
       const mainClockElement = this.shadow.querySelector('#main-clock .clock-time');
       const date = new Date();
       if (mainClockElement) {
         mainClockElement.textContent = date.strftime(CONFIG.clock.format, CONFIG.clock.locale);
       }
 
-      // Update additional clocks if they exist
       if (CONFIG.additionalClocks && CONFIG.additionalClocks.length) {
         CONFIG.additionalClocks.forEach((clock, index) => {
           const clockElement = this.shadow.querySelector(`#additional-clock-${index} .clock-time`);
           if (clockElement) {
             let timezoneDate;
 
-            // Check if timezone name is provided
+            // Use IANA timezone name when provided; otherwise fall back to local time
             if (clock.timezone) {
-              // Use IANA timezone name (e.g., "America/New_York")
               timezoneDate = Date.createWithTimezone(clock.timezone);
-            } else if (clock.timezoneOffset !== undefined) {
-              // Fallback to legacy offset method
-              timezoneDate = Date.createWithTimezoneOffset(clock.timezoneOffset);
             } else {
-              // Use local time if neither is provided
               timezoneDate = new Date();
             }
 
@@ -180,12 +172,25 @@ class Clock extends Component {
    * Initialise the clock and update every second
    * @returns {void}
    */
+  /**
+   * Schedule the next tick aligned to the start of the next full second
+   * to avoid drift from setInterval slop.
+   * @returns {void}
+   */
+  scheduleNextTick() {
+    const delay = 1000 - (Date.now() % 1000);
+    setTimeout(() => {
+      this.setTime();
+      this.scheduleNextTick();
+    }, delay);
+  }
+
   connectedCallback() {
     this.render().then(() => {
       setTimeout(() => {
         this.setTime();
         this.setIconColor();
-        setInterval(() => this.setTime(), 1000);
+        this.scheduleNextTick();
       }, 100);
     });
   }

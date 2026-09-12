@@ -1,8 +1,7 @@
 /**
- * Storage provides a simple wrapper for localStorage access for configuration and state
+ * Storage wraps localStorage access for configuration and state
  */
 class Storage {
-  // The localStorage key for this storage instance
   key;
 
   /**
