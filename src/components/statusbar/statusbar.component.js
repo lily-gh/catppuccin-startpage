@@ -11,6 +11,8 @@ class Statusbar extends Component {
   };
 
   currentTabIndex = 0;
+  wheelNavigationLocked = false;
+  wheelUnlockTimer;
 
   /**
    * Initialise the statusbar component
@@ -281,9 +283,19 @@ class Statusbar extends Component {
   handleWheelScroll(event) {
     if (!event) return;
 
-    let { target, wheelDelta } = event;
+    const { target } = event;
+    const wheelDelta = event.deltaY ?? -event.wheelDelta;
 
     if (target.shadow && target.shadow.activeElement) return;
+    if (wheelDelta === 0) return;
+
+    clearTimeout(this.wheelUnlockTimer);
+    this.wheelUnlockTimer = window.setTimeout(() => {
+      this.wheelNavigationLocked = false;
+    }, 75);
+
+    if (this.wheelNavigationLocked) return;
+    this.wheelNavigationLocked = true;
 
     let activeTab = -1;
     this.refs.tabs.forEach((tab, index) => {
@@ -292,7 +304,7 @@ class Statusbar extends Component {
       }
     });
 
-    if (wheelDelta > 0) {
+    if (wheelDelta < 0) {
       this.activateByKey((activeTab + 1) % (this.refs.tabs.length - 1));
     } else {
       this.activateByKey(activeTab - 1 < 0 ? this.refs.tabs.length - 2 : activeTab - 1);

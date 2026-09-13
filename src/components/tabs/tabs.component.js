@@ -174,9 +174,11 @@ class Tabs extends Component {
           --flavour: var(--accent);
           width: 100%;
           height: 100%;
-          right: 100%;
+          right: 0;
           background: ${CONFIG.palette.base};
-          transition: all .6s;
+          transform: translate3d(-100%, 0, 0);
+          transition: transform .6s cubic-bezier(.22, 1, .36, 1);
+          will-change: transform;
           /* animation: scroll 25s ease-in-out infinite; */
       }
 
@@ -210,7 +212,7 @@ class Tabs extends Component {
       }
 
       .categories ul[active] {
-          right: 0;
+          transform: translate3d(0, 0, 0);
           z-index: 1;
       }
 
