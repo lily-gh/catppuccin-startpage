@@ -40,7 +40,7 @@ const default_configuration = {
   localIcons: true,
   localFonts: true,
   fastlink: "https://chatgpt.com",
-  openLastVisitedTab: false,
+  openLastVisitedTab: true,
   tabs: [
     {
       name: "dev ++",

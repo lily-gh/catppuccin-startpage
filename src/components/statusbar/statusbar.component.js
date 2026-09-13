@@ -265,7 +265,11 @@ class Statusbar extends Component {
    */
   openLastVisitedTab() {
     if (!CONFIG.openLastVisitedTab) return;
-    this.activateByKey(localStorage.lastVisitedTab);
+
+    const storedTabIndex = Number.parseInt(localStorage.lastVisitedTab, 10);
+    if (!Number.isInteger(storedTabIndex)) return;
+
+    this.activateByKey(storedTabIndex);
   }
 
   /**
@@ -333,11 +337,14 @@ class Statusbar extends Component {
    * @param {number} key - The tab index to activate
    */
   activateByKey(key) {
-    if (key < 0) return;
-    this.currentTabIndex = key;
+    const tabIndex = Number(key);
+    const tabsCount = this.externalRefs.categories.length;
 
-    this.activate(this.refs.tabs, this.refs.tabs[key]);
-    this.activate(this.externalRefs.categories, this.externalRefs.categories[key]);
+    if (!Number.isInteger(tabIndex) || tabIndex < 0 || tabIndex >= tabsCount) return;
+    this.currentTabIndex = tabIndex;
+
+    this.activate(this.refs.tabs, this.refs.tabs[tabIndex]);
+    this.activate(this.externalRefs.categories, this.externalRefs.categories[tabIndex]);
   }
 
   /**
