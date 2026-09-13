@@ -88,6 +88,7 @@ class Category extends Component {
         .map(({ name, background_url }, index) => {
           return `<ul class="${name}" ${Category.getBackgroundStyle(background_url)} ${index == 0 ? "active" : ""}>
             <div class="banner"></div>
+            <h1 class="tab-title">${name}</h1>
             <div class="links">${Links.getAll(name, tabs)}</div>
           </ul>`;
         })
@@ -145,6 +146,10 @@ class Tabs extends Component {
 
       .nav {
           color: #fff;
+      }
+
+      .tab-title {
+          display: none;
       }
 
       #panels {
@@ -326,6 +331,145 @@ class Tabs extends Component {
           }
           100% {
               opacity: 1;
+          }
+      }
+
+      @media (max-width: 768px), (hover: none) and (pointer: coarse) {
+          :host,
+          #links {
+              display: block;
+              width: 100%;
+              height: 100dvh;
+          }
+
+          #panels {
+              inset: 0;
+              width: 100%;
+              max-width: none;
+              height: 100%;
+              margin: 0;
+              border-radius: 0;
+              box-shadow: none;
+          }
+
+          .categories {
+              border-radius: 0;
+          }
+
+          .categories ul {
+              box-sizing: border-box;
+              overflow-x: hidden;
+              overflow-y: auto;
+              overscroll-behavior: contain;
+              scrollbar-width: none;
+              touch-action: pan-y;
+              padding: calc(24px + env(safe-area-inset-top)) 20px
+                  calc(106px + env(safe-area-inset-bottom));
+              background-image: none !important;
+              -webkit-overflow-scrolling: touch;
+          }
+
+          .categories ul::-webkit-scrollbar {
+              display: none;
+          }
+
+          .categories .banner,
+          .categories ul::after {
+              display: none;
+          }
+
+          .tab-title {
+              position: relative;
+              display: block;
+              margin: 0 0 28px;
+              color: var(--flavour);
+              font: 600 28px 'Raleway', sans-serif;
+              letter-spacing: .14em;
+              line-height: 1.25;
+              text-align: center;
+              text-transform: uppercase;
+          }
+
+          #panels .categories .links {
+              position: relative;
+              right: auto;
+              display: block;
+              width: 100%;
+              height: auto;
+              padding: 0;
+              background: transparent;
+              box-shadow: none;
+          }
+
+          .categories .links li {
+              width: 100%;
+          }
+
+          .categories .links li:not(:last-child) {
+              margin-bottom: 24px;
+              padding-bottom: 18px;
+          }
+
+          .categories .links li h1 {
+              margin-bottom: 12px;
+          }
+
+          .categories .links-wrapper {
+              display: grid;
+              grid-template-columns: repeat(2, minmax(0, 1fr));
+              gap: 10px;
+          }
+
+          .categories .link-info,
+          .categories .link-info:not(:last-child) {
+              display: block;
+              min-width: 0;
+              margin: 0;
+          }
+
+          .categories ul .links a {
+              box-sizing: border-box;
+              width: 100%;
+              min-height: 48px;
+              margin: 0;
+              padding: .6em .7em;
+              overflow: hidden;
+              border-radius: 10px;
+          }
+
+          .categories .link-name {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+          }
+
+          status-bar {
+              position: fixed !important;
+              z-index: 10;
+              right: auto !important;
+              bottom: calc(20px + env(safe-area-inset-bottom));
+              left: 50% !important;
+              width: min(calc(100% - 24px), 248px);
+              height: 64px;
+              margin: 0 !important;
+              overflow: visible;
+              border: 0;
+              border-radius: 0;
+              background: transparent;
+              box-shadow: none;
+              -webkit-backdrop-filter: none;
+              backdrop-filter: none;
+              transform: translateX(-50%);
+          }
+
+          status-bar::before {
+              display: none;
+          }
+      }
+
+      @media (max-width: 360px) {
+          .categories .links-wrapper {
+              grid-template-columns: 1fr;
           }
       }
     `;
