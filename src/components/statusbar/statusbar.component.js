@@ -82,10 +82,6 @@ class Statusbar extends Component {
           justify-content: center;
       }
 
-      #tabs ul li span {
-          display: none;
-      }
-
       #tabs ul li:not(:last-child) {
           width: 35px;
           text-align: center;
@@ -216,156 +212,6 @@ class Statusbar extends Component {
         width: 70%;
       }
 
-      @media (max-width: 768px), (hover: none) and (pointer: coarse) {
-          #tabs,
-          #tabs > cols {
-              width: 100%;
-              height: 100%;
-          }
-
-          #tabs > cols {
-              display: grid;
-              grid-template-columns: minmax(0, 1fr) 64px;
-              gap: 12px;
-          }
-
-          .widgets {
-              display: none;
-          }
-
-          .fastlink {
-              position: relative;
-              display: flex;
-              grid-column: 2;
-              grid-row: 1;
-              width: 64px;
-              height: 100%;
-              border: 1px solid rgb(255 255 255 / 12%);
-              border-radius: 50%;
-          }
-
-          .fastlink-icon {
-              width: 44px;
-              height: 44px;
-              border-radius: 50%;
-          }
-
-          #tabs ul {
-              box-sizing: border-box;
-              display: flex;
-              grid-column: 1;
-              grid-row: 1;
-              align-items: stretch;
-              width: 100%;
-              height: 100%;
-              margin: 0;
-              padding: 0 8px;
-              overflow: hidden;
-              border: 1px solid rgb(255 255 255 / 12%);
-              border-radius: 999px;
-          }
-
-          .fastlink,
-          #tabs ul {
-              background: ${CONFIG.palette.surface0}e6;
-              background:
-                  linear-gradient(145deg, rgb(255 255 255 / 10%), rgb(255 255 255 / 2%)),
-                  color-mix(in srgb, ${CONFIG.palette.surface0} 86%, transparent);
-              box-shadow:
-                  inset 0 1px 0 rgb(255 255 255 / 16%),
-                  0 10px 28px rgb(0 0 0 / 24%);
-              -webkit-backdrop-filter: saturate(160%) blur(20px);
-              backdrop-filter: saturate(160%) blur(20px);
-          }
-
-        #tabs ul li:not(:last-child) {
-          position: relative;
-          display: flex;
-          flex: 1 1 0;
-          align-items: center;
-          justify-content: center;
-          min-width: 0;
-          width: auto;
-          height: 100%;
-          overflow: hidden;
-          padding: 0;
-          border-radius: 999px;
-          color: ${CONFIG.palette.subtext1};
-          font: 700 13px 'Yu Gothic', serif;
-          line-height: 0;
-          -webkit-tap-highlight-color: transparent;
-          transition: color .2s ease, background .2s ease;
-        }
-
-          #tabs ul li:not(:last-child)::after {
-              display: flex;
-          }
-
-          #tabs ul li span {
-              display: none;
-          }
-
-          #tabs ul li[active]:not(:last-child) {
-              padding: 0;
-              color: ${CONFIG.palette.text};
-              font-size: 13px;
-              background: transparent;
-              box-shadow: none;
-          }
-
-        #tabs ul li:not(:last-child):hover,
-        #tabs ul li:not(:last-child):focus,
-        #tabs ul li:not(:last-child):focus-visible {
-          outline: none;
-          background: transparent;
-          box-shadow: none;
-        }
-
-          #tabs ul li:last-child {
-              display: flex;
-              align-items: flex-end;
-              justify-content: center;
-              left: 8px;
-              bottom: 0;
-              width: calc((100% - 16px) / var(--tabs-count));
-              height: 3px;
-              margin: 0;
-              background: transparent;
-              transition: transform .3s cubic-bezier(.22, 1, .36, 1);
-          }
-
-          #tabs ul li:last-child::after {
-              width: 32px;
-              height: 3px;
-              background: var(--flavour);
-              content: '';
-          }
-
-          #tabs ul li[active]:nth-child(1) ~ li:last-child {
-              margin: 0;
-              transform: translateX(0);
-          }
-
-          #tabs ul li[active]:nth-child(2) ~ li:last-child {
-              margin: 0;
-              transform: translateX(100%);
-          }
-
-          #tabs ul li[active]:nth-child(3) ~ li:last-child {
-              margin: 0;
-              transform: translateX(200%);
-          }
-
-          #tabs ul li[active]:nth-child(4) ~ li:last-child {
-              margin: 0;
-              transform: translateX(300%);
-          }
-
-          #tabs ul li[active]:nth-child(5) ~ li:last-child {
-              margin: 0;
-              transform: translateX(400%);
-          }
-      }
     `;
   }
 
@@ -611,11 +457,9 @@ class Statusbar extends Component {
    */
   createTabs() {
     const categoriesCount = this.externalRefs.categories.length;
-    this.refs.indicator.style.setProperty("--tabs-count", categoriesCount);
 
     for (let i = 0; i < categoriesCount; i++) {
       const tab = document.createElement("li");
-      const label = document.createElement("span");
       const tabName = CONFIG.tabs[i]?.name ?? String(i + 1);
 
       tab.setAttribute("role", "tab");
@@ -625,8 +469,6 @@ class Statusbar extends Component {
       tab.setAttribute("tabindex", i === 0 ? "0" : "-1");
       if (i === 0) tab.setAttribute("active", "");
 
-      label.textContent = tabName;
-      tab.appendChild(label);
       this.refs.indicator.appendChild(tab);
     }
 

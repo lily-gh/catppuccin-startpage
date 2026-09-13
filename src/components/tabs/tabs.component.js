@@ -355,7 +355,7 @@ class Tabs extends Component {
               scrollbar-width: none;
               touch-action: pan-y;
               padding: calc(24px + env(safe-area-inset-top)) 20px
-                  calc(106px + env(safe-area-inset-bottom));
+                  calc(24px + env(safe-area-inset-bottom));
               background-image: none !important;
               -webkit-overflow-scrolling: touch;
           }
@@ -435,25 +435,6 @@ class Tabs extends Component {
           }
 
           status-bar {
-              position: fixed !important;
-              z-index: 10;
-              right: auto !important;
-              bottom: calc(20px + env(safe-area-inset-bottom));
-              left: 50% !important;
-              width: min(calc(100% - 24px), 248px);
-              height: 64px;
-              margin: 0 !important;
-              overflow: visible;
-              border: 0;
-              border-radius: 0;
-              background: transparent;
-              box-shadow: none;
-              -webkit-backdrop-filter: none;
-              backdrop-filter: none;
-              transform: translateX(-50%);
-          }
-
-          status-bar::before {
               display: none;
           }
       }
