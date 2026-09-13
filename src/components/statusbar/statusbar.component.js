@@ -211,9 +211,13 @@ class Statusbar extends Component {
 
   /**
    * Generates HTML template for the statusbar component
-   * @returns {string} HTML template with tabs and widgets
-   */
+  * @returns {string} HTML template with tabs and widgets
+  */
   template() {
+    const weatherWidget = String(CONFIG.temperature.appId ?? "").trim()
+      ? '<weather-forecast class="+ widget weather"></weather-forecast>'
+      : "";
+
     return `
         <div id="tabs">
             <cols>
@@ -223,7 +227,7 @@ class Statusbar extends Component {
                 <ul class="- indicator"></ul>
                 <div class="+ widgets col-end">
                     <current-time class="+ widget time-widget"></current-time>
-                    <weather-forecast class="+ widget weather"></weather-forecast>
+                    ${weatherWidget}
                 </div>
             </cols>
         </div>`;

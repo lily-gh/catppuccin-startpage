@@ -10,7 +10,7 @@ let palette = initThemeSystem(preferredLightTheme, preferredDarkTheme);
 const default_configuration = {
   overrideStorage: true,
   temperature: {
-    location: "Europe/Berlin",
+    location: "Berlin",
     scale: "C",
   },
   clock: {
