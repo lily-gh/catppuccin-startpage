@@ -42,7 +42,7 @@ class Links extends Component {
               .map(
                 (link) => `
                   <div class="link-info">
-                    <a href="${link.url}" target="_blank">
+                    <a href="${link.url}" target="${link.openInNewTab === false ? "_self" : "_blank"}">
                       ${Links.getIcon(link)}
                       ${link.name ? `<p class="link-name">${link.name}</p>` : ""}
                     </a>
@@ -187,11 +187,11 @@ class Tabs extends Component {
       }
 
       .categories ul:nth-child(1) {
-          --flavour: ${CONFIG.palette.green};
+          --flavour: ${CONFIG.palette.mauve};
       }
 
       .categories ul:nth-child(2) {
-          --flavour: ${CONFIG.palette.peach};
+          --flavour: ${CONFIG.palette.pink};
       }
 
       .categories ul:nth-child(3) {
