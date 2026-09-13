@@ -88,7 +88,7 @@ You can use different add-ons or extensions for this.
 ## 🛠️ Development
 
 For local viewing, run `python3 -m http.server 8000` from the repository root and open `http://localhost:8000`.
-To regenerate the palette CSS, run `just build` (requires [`whiskers`](https://github.com/catppuccin/whiskers)).
+To regenerate the palette and JavaScript bundles, run `just build` (requires [`whiskers`](https://github.com/catppuccin/whiskers)). Run `just bundle` when only JavaScript sources changed.
 
 ### 🔎 Search
 

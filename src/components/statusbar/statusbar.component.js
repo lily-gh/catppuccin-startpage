@@ -15,6 +15,7 @@ class Statusbar extends Component {
   wheelUnlockTimer;
   swipeStartX = null;
   swipeStartY = null;
+  mobileLayoutQuery = window.matchMedia("(max-width: 768px), (hover: none) and (pointer: coarse)");
 
   /**
    * Initialise the statusbar component
@@ -277,22 +278,24 @@ class Statusbar extends Component {
               backdrop-filter: saturate(160%) blur(20px);
           }
 
-          #tabs ul li:not(:last-child) {
-              position: relative;
-              display: flex;
-              flex: 1 1 0;
-              align-items: center;
-              justify-content: center;
-              min-width: 0;
-              width: auto;
-              height: 100%;
-              padding: 0;
-              border-radius: 8px;
-              color: ${CONFIG.palette.subtext1};
-              font: 700 13px 'Yu Gothic', serif;
-              line-height: 0;
-              transition: color .2s ease, background .2s ease;
-          }
+        #tabs ul li:not(:last-child) {
+          position: relative;
+          display: flex;
+          flex: 1 1 0;
+          align-items: center;
+          justify-content: center;
+          min-width: 0;
+          width: auto;
+          height: 100%;
+          overflow: hidden;
+          padding: 0;
+          border-radius: 999px;
+          color: ${CONFIG.palette.subtext1};
+          font: 700 13px 'Yu Gothic', serif;
+          line-height: 0;
+          -webkit-tap-highlight-color: transparent;
+          transition: color .2s ease, background .2s ease;
+        }
 
           #tabs ul li:not(:last-child)::after {
               display: flex;
@@ -310,13 +313,13 @@ class Statusbar extends Component {
               box-shadow: none;
           }
 
-          #tabs ul li:not(:last-child):hover {
-              background: rgb(255 255 255 / 6%);
-          }
-
-          #tabs ul li[active]:not(:last-child):hover {
-              background: rgb(255 255 255 / 6%);
-          }
+        #tabs ul li:not(:last-child):hover,
+        #tabs ul li:not(:last-child):focus,
+        #tabs ul li:not(:last-child):focus-visible {
+          outline: none;
+          background: transparent;
+          box-shadow: none;
+        }
 
           #tabs ul li:last-child {
               display: flex;
@@ -417,6 +420,9 @@ class Statusbar extends Component {
     this.refs.fastlink.onclick = () => {
       if (CONFIG.fastlink) window.location.href = CONFIG.fastlink;
     };
+    this.mobileLayoutQuery.addEventListener("change", (event) => {
+      if (!event.matches) this.loadBackground(this.externalRefs.categories[this.currentTabIndex]);
+    });
 
     // Store current tab index before page unload
     if (CONFIG.openLastVisitedTab) {
@@ -435,12 +441,12 @@ class Statusbar extends Component {
    * Opens the last visited tab from localStorage
    */
   openLastVisitedTab() {
-    if (!CONFIG.openLastVisitedTab) return;
-
     const storedTabIndex = Number.parseInt(localStorage.lastVisitedTab, 10);
-    if (!Number.isInteger(storedTabIndex)) return;
+    const initialTabIndex = CONFIG.openLastVisitedTab && Number.isInteger(storedTabIndex)
+      ? storedTabIndex
+      : 0;
 
-    this.activateByKey(storedTabIndex);
+    this.activateByKey(initialTabIndex);
   }
 
   /**
@@ -456,7 +462,19 @@ class Statusbar extends Component {
    * @returns {boolean} True when mobile navigation should be used
    */
   isMobileLayout() {
-    return window.matchMedia("(max-width: 768px), (hover: none) and (pointer: coarse)").matches;
+    return this.mobileLayoutQuery.matches;
+  }
+
+  /**
+   * Loads a tab background only when the desktop layout can display it
+   * @param {Element} category - The tab panel whose background should be loaded
+   */
+  loadBackground(category) {
+    if (this.isMobileLayout() || category.style.backgroundImage || !category.dataset.backgroundUrl) return;
+
+    category.style.backgroundImage = `url(${JSON.stringify(category.dataset.backgroundUrl)})`;
+    category.style.backgroundRepeat = "no-repeat";
+    category.style.backgroundSize = "contain";
   }
 
   /**
@@ -573,8 +591,11 @@ class Statusbar extends Component {
     if (!Number.isInteger(tabIndex) || tabIndex < 0 || tabIndex >= tabsCount) return;
     this.currentTabIndex = tabIndex;
 
+    const category = this.externalRefs.categories[tabIndex];
+    this.loadBackground(category);
+
     this.activate(this.refs.tabs, this.refs.tabs[tabIndex]);
-    this.activate(this.externalRefs.categories, this.externalRefs.categories[tabIndex]);
+    this.activate(this.externalRefs.categories, category);
 
     this.refs.tabs.forEach((tab, index) => {
       if (index >= tabsCount) return;

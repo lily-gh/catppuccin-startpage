@@ -1,6 +1,7 @@
 /* Local Material Icons font definitions */
 @font-face {
     font-family: 'Material Icons';
+    font-display: swap;
     font-style: normal;
     font-weight: 400;
     src: url('./material-icons.ttf') format('truetype');

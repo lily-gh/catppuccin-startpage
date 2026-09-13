@@ -4,13 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A static, dependency-free browser startpage (Catppuccin-themed) served from GitHub Pages. Vanilla JS Web Components — no bundler, no package manager, no test suite, no linter, no CI. Everything ships as-is from the repo root; `.nojekyll` disables Jekyll processing. `.github/` holds only issue templates and a PR template.
+A static, dependency-free browser startpage (Catppuccin-themed). Vanilla JS Web Components — no package manager, test suite, or linter. Everything ships as-is from the repo root.
 
 ## Commands
 
 ```sh
 just dev          # python3 -m http.server 8000, then open http://localhost:8000
-just build        # regenerate src/common/palette.js from templates/palette.tera (needs whiskers)
+just build        # regenerate the palette and JavaScript bundles (needs whiskers)
+just bundle       # regenerate the two concatenated JavaScript bundles
 just install      # cargo install catppuccin-whiskers
 just build-awoo   # regenerate src/css/awoo.min.css from src/css/awoo-local.min.css
 ```
@@ -27,7 +28,7 @@ There are no test, lint, or deploy commands — GitHub Pages serves the repo roo
 
 ## Architecture
 
-Scripts are plain `<script>` tags in `index.html` — **no modules, no imports; everything is a global and load order is load-bearing.** Adding a new file means adding a `<script>` tag in the correct slot: `src/common/*` first, then `userconfig.js` (which constructs `CONFIG`), then components, then `src/common/module.js` last.
+Scripts have **no modules or imports; everything is a global and load order is load-bearing.** `index.html` loads the generated `src/common.bundle.js`, then `userconfig.js` (which constructs `CONFIG`), then the generated `src/components.bundle.js`. When adding or changing a source file, preserve its position in the `just bundle` recipe and regenerate the bundles. Do not hand-edit the generated bundles.
 
 **Boot sequence**
 

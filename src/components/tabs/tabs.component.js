@@ -69,15 +69,6 @@ class Category extends Component {
   }
 
   /**
-   * Generates background style attribute for category
-   * @param {string} url - Background image URL
-   * @returns {string} CSS style attribute string
-   */
-  static getBackgroundStyle(url) {
-    return `style="background-image: url(${url}); background-repeat: no-repeat; background-size: contain;"`;
-  }
-
-  /**
    * Generates HTML for all tab categories
    * @param {Array} tabs - Array of tab objects
    * @returns {string} HTML string containing all categories
@@ -86,7 +77,7 @@ class Category extends Component {
     return `
       ${tabs
         .map(({ name, background_url }, index) => {
-          return `<ul class="${name}" ${Category.getBackgroundStyle(background_url)} ${index == 0 ? "active" : ""}>
+          return `<ul class="${name}" data-background-url="${background_url}" ${index == 0 ? "active" : ""}>
             <div class="banner"></div>
             <h1 class="tab-title">${name}</h1>
             <div class="links">${Links.getAll(name, tabs)}</div>
