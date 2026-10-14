@@ -169,14 +169,20 @@ const default_configuration = {
               openInNewTab: false,
             },
             {
-              name: "youtube",
-              url: "https://www.youtube.com",
+              name: "Eric Morisson",
+              url: "https://www.youtube.com/@EricMorrisonDev/videos",
               icon: "brand-youtube",
               icon_color: palette.red,
             },
             {
               name: "Enrico Tartarotti",
               url: "https://www.youtube.com/@enricotartarotti/videos",
+              icon: "brand-youtube",
+              icon_color: palette.red,
+            },
+            {
+              name: "Design Theory",
+              url: "https://www.youtube.com/@Design.Theory/videos",
               icon: "brand-youtube",
               icon_color: palette.red,
             },
@@ -202,6 +208,13 @@ const default_configuration = {
             {
               name: "r/ADHD_Partners",
               url: "https://www.reddit.com/r/ADHD_Partners/",
+              icon: "brand-reddit",
+              icon_color: palette.red,
+              openInNewTab: false,
+            },
+            {
+              name: "r/Scams",
+              url: "https://www.reddit.com/r/Scams/",
               icon: "brand-reddit",
               icon_color: palette.red,
               openInNewTab: false,
