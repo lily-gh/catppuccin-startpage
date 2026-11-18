@@ -136,8 +136,14 @@ const default_configuration = {
           ],
         },
         {
-          name: "challenges",
+          name: "misc",
           links: [
+            {
+              name: "JZR Tools",
+              url: "https://jzr.uz/tools",
+              icon: "tools",
+              icon_color: palette.green,
+            },
             {
               name: "strikk",
               url: "https://strikk.dev/",
